@@ -1,0 +1,10 @@
+<div id="errors">
+  <h1><%= denomination.errors.count %> errors occured</h1>
+  <ul>
+    <% denomination.errors.full_messages.each do |message| %>
+      <li>
+        <%= message %><br/>
+      </li>
+    <% end %>
+  </ul>
+</div>

@@ -1,0 +1,22 @@
+<%= form_for denomination, remote: true do |denominations| %>
+
+  <div id="error_division"></div>
+
+
+  <div class="form-group row">
+    <label for="rupees" class="col-md-2">Rupees</label>
+    <div class="col-md-8">
+      <%= denominations.text_field :rupees, autocomplete: 'off', class: 'form-control col-md-8' %>
+    </div>
+  </div>
+
+  <div class="form-group row">
+    <label for="count" class="col-md-2">Count</label>
+    <div class="col-md-8">
+      <%= denominations.text_field :count, autocomplete: 'off', class: 'form-control col-md-8' %>
+    </div>
+  </div>
+
+  <%= denominations.submit 'Submit', class: 'bt btn-success' %>
+<% end %>
+<br/>

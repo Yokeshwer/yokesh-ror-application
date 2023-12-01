@@ -1,0 +1,8 @@
+var denomination = document.getElementById("<%= @denomination.id %>");
+denomination.parentNode.parentNode.remove();
+$('#flash_message').html('<div class="alert alert-danger" id="message_shower"><%= flash[:notice] %></div>');
+setTimeout(remove_flash_message,3000);
+
+function remove_flash_message(){
+    $('#message_shower').remove();
+}

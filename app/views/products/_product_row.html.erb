@@ -1,0 +1,5 @@
+<td><%= product.name %></td>
+<td><%= product.unit_price %></td>
+<td><%= product.tax_percentage %></td>
+<td><%= link_to 'Update', edit_product_path(product), class: 'btn btn-primary', remote: true %></td>
+<td><%= link_to 'Delete', product_path(product) ,method: :delete, data: { confirm: 'Are you sure to delete the product?'}, class: 'btn btn-danger', id: product.id, remote: true %></td>

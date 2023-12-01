@@ -1,0 +1,12 @@
+<% if @denomination.errors.any? %>
+  $('#error_division').html('<%= j render 'errors', denomination: @denomination %>')
+<% else %>
+  $('#denominations').modal('hide');
+  $('#denomination_table').append('<tr id="denomination_<%= @denomination.id %>">\n'+'<%= j render 'denominations/denomination_row', denomination: @denomination %>\n'+'</tr>');
+  $('#flash_message').html('<div class="alert alert-success" id="message_shower"><%= flash[:notice] %></div>');
+  setTimeout(remove_flash_message,3000);
+
+  function remove_flash_message(){
+      $('#message_shower').remove();
+  }
+<% end %>

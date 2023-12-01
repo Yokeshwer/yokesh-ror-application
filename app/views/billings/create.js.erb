@@ -1,0 +1,3 @@
+<% if @new_one.errors.any? %>
+  $('#error_values').html('<%= j render 'errors', new_one: @new_one %>');
+<% end %>

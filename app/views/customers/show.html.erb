@@ -1,0 +1,99 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+
+  <a class="navbar-brand" href="/customers">Bill List</a>
+  <a class="navbar-brand" href="/denominations">Denominations</a>
+  <a class="navbar-brand" href="/billings">New Bill</a>
+  <a class="navbar-brand" href="/products">Products</a>
+
+</nav>
+<% if flash[:notice] %>
+  <div class="alert alert-success">
+    <%= flash[:notice] %>
+  </div>
+<% end %>
+<div class="row">
+  <div class="col-md-1" style="background: powderblue">
+
+  </div>
+  <div class="col-md-10">
+      <h1>Billing System</h1>
+
+    <br/>
+    <p><b>Customer Email</b></p>
+    <p><%= @billing.email %></p>
+    <br/>
+
+    <h1>Bill Section<%= link_to 'Send email', send_email_customer_path, method: :post, class: 'btn btn-success', style: 'float: right' %></h1>
+    <table class="table table-striped">
+      <thead align="center">
+      <tr>
+        <th>Product name</th>
+        <th>Unit Price</th>
+        <th>Quantity</th>
+        <th>Purchased Price</th>
+        <th>Tax % for item</th>
+        <th>Tax payable for item</th>
+        <th>Total price of the item</th>
+      </tr>
+      </thead>
+      <tbody align="center">
+      <% @product_details.each do |product_detail| %>
+        <tr>
+          <td><%= product_detail.product.name %></td>
+          <td><%= '%.2f' % product_detail.product.unit_price %></td>
+          <td><%= product_detail.quantity %></td>
+          <td><%= '%.2f' % product_detail.purchased_price %></td>
+          <td><%= product_detail.product.tax_percentage %></td>
+          <td><%= '%.2f' % product_detail.tax_payable_for_item %></td>
+          <td><%= '%.2f' % product_detail.total_price_of_item %></td>
+        </tr>
+      <% end %>
+      </tbody>
+    </table>
+
+    <br/>
+    <h1>Balance Denominations</h1>
+    <% @billing.balance.each do |rupees,count| %>
+      <div class="form-group row">
+        <div class="col-md-1">
+          <%= rupees %>
+        </div>
+        <div class="col-md-2">
+          <%= count %>
+        </div>
+      </div>
+
+    <% end %>
+
+  </div>
+  <div class="col-md-1" style="background: powderblue">
+
+  </div>
+</div>
+
+  <div class="row">
+    <div class="col-md-1" style="background: powderblue">
+
+    </div>
+    <div class="col-md-9" align="right" style="background: #DADADA">
+      <br/>
+      <p><b>Total price without tax:</b></p>
+      <p><b>Total tax payable:</b></p>
+      <p><b>Net prize of the purchased item:</b></p>
+      <p><b>Rounded down value of the purchased items net price:</b></p>
+      <p><b>Balance payable to the customer:</b></p>
+    </div>
+    <div class="col-md-1" style="background: #DADADA">
+      <br/>
+
+      <p align="right"><%= '%.2f' % @billing.without_tax %></p>
+      <p align="right"><%= '%.2f' % @billing.tax_price %></p>
+      <p align="right"><%= '%.2f' % (@billing.without_tax + @billing.tax_price) %></p>
+      <p align="right"><%= '%.2f' % (@billing.without_tax + @billing.tax_price).to_i %></p>
+      <p align="right"><%= '%.2f' % (@billing.amount - (@billing.without_tax + @billing.tax_price).to_i ) %></p>
+
+    </div>
+    <div class="col-md-1" style="background: powderblue">
+
+    </div>
+  </div>

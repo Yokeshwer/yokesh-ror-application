@@ -1,0 +1,296 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+
+  <a class="navbar-brand" href="/customers">Bill List</a>
+  <a class="navbar-brand" href="/denominations">Denominations</a>
+  <a class="navbar-brand" href="/products">Products</a>
+
+</nav>
+<%= form_for @new_one, remote: true do |customer| %>
+
+  <div class="row">
+    <div class="col-md-1" style="background: powderblue">
+
+    </div>
+
+    <div class="col-md-10">
+      <div id="error_values"></div>
+
+      <p><b>Billing System</b></p>
+      <div class="form-inline">
+          <p>Customer Email&emsp;<%= customer.text_field :email, placeholder: 'Enter Email Address', class: 'form-control', autocomplete: 'off' %></p>
+      </div>
+
+      <hr/>
+      <br/>
+
+      <p><b>Bill section</b><button id="call" type="button" class="btn btn-primary" style="float: right;">Add New</button></p>
+      &emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<small><b>Product name</b></small>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<small><b>Quantity</b></small>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<small><b>Price per item</b></small>&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<small><b>Price for total quantity</b></small>
+      <div id="inputs">
+        <div class="form-inline">
+          <select class="val1 form-control col-md-3">
+            <% @products.each do |product| %>
+              <option value=<%= product.id %>><%= product.name %></option>
+            <% end %>
+          </select>&emsp;
+
+          <input name=billing[product_details_attributes][][quantity] class="val2 form-control col-md-3" min="1" type="number" value="1">&emsp;
+
+          <input placeholder="unit prize" class="val3" value="<%= @product.unit_price %>" type="hidden" >
+          <input name=billing[product_details_attributes][][purchased_price] placeholder="purchased prize" class="val4" value="<%= @product.unit_price %>" type="hidden">
+          <input placeholder="tax%" class="val5" value="<%= @product.tax_percentage %>" type="hidden">
+          <input name=billing[product_details_attributes][][tax_payable_for_item] placeholder="total tax" class="val6" type="hidden">
+
+          <input class="additional form-control col-md-2" readonly>&emsp;
+          <input name=billing[product_details_attributes][][total_price_of_item] placeholder="total price" class="val7 form-control col-md-2" readonly>&emsp;
+
+          <input class="product_id" name=billing[product_details_attributes][][product_id] value="<%= @product.id %>" type="hidden">
+          <button id="delete" class="btn btn-danger">Delete</button>
+
+          <p><br/><br/></p>
+
+        </div>
+
+
+      </div>
+
+      <hr/>
+      <br/>
+
+
+      <input id="without_tax" value="<%= @product.unit_price %>" name=billing[without_tax] type="hidden"><input id="tax_prize" name=billing[tax_price] type="hidden"><div class="form-inline"><p><b>Total:</b></p>&emsp;<input id="total_bill" name=billing[total_bill] class="form-control col-md-3" readonly></div>
+      <br/>
+
+    </div>
+
+    <div class="col-md-1" style="background: powderblue">
+
+    </div>
+  </div>
+
+    <div class="row">
+      <div class="col-md-1" style="background: powderblue">
+
+      </div>
+      <div class="col-md-10" style="background: #DADADA; padding-top: 30px; padding-bottom: 30px">
+        <div class="form-inline">
+            <b>Cash paid by customer</b>&emsp;<%= customer.text_field :amount, class: 'form-control', autocomplete: 'off' %>
+            <%= customer.submit 'Generate Bill', class: "btn btn-primary offset-md-6", style: 'display: flex; justify-content: flex-end' %>
+        </div>
+        <div class="form-inline">
+
+        </div>
+      </div>
+      <div class="col-md-1" style="background: powderblue">
+
+      </div>
+    </div>
+
+<% end %>
+
+<script>
+
+
+
+    $(document).ready(function(){
+
+
+        document.getElementsByClassName('val6')[0].value = (document.getElementsByClassName('val3')[0].value/100) * document.getElementsByClassName('val5')[0].value;
+        document.getElementsByClassName('val7')[0].value = parseFloat(document.getElementsByClassName('val4')[0].value) + parseFloat(document.getElementsByClassName('val6')[0].value);
+        document.getElementsByClassName('additional')[0].value = parseFloat(document.getElementsByClassName('val3')[0].value) + parseFloat(document.getElementsByClassName('val6')[0].value);
+
+        document.getElementById('tax_prize').value = (document.getElementsByClassName('val3')[0].value/100) * document.getElementsByClassName('val5')[0].value;
+        document.getElementById('total_bill').value = Math.floor(document.getElementsByClassName('val7')[0].value);
+
+        let val1 = document.getElementsByClassName('val1')[0];
+        let val2 = document.getElementsByClassName('val2')[0];
+        let val3 = document.getElementsByClassName('val3')[0];
+        let val4 = document.getElementsByClassName('val4')[0];
+        let val5 = document.getElementsByClassName('val5')[0];
+        let val6 = document.getElementsByClassName('val6')[0];
+        let val7 = document.getElementsByClassName('val7')[0];
+        let additional = document.getElementsByClassName('additional')[0];
+        let productId = document.getElementsByClassName('product_id')[0];
+        val1.addEventListener('input',function(){
+            $.ajax({
+                url:  "/billings/"+val1.value+"/product_details",
+                dataType: "json",
+                success: function(data) {
+                    val3.value = data.unit_price;
+                    val4.value = data.unit_price * val2.value;
+                    val5.value = data.tax;
+                    val6.value = (val4.value/100)*val5.value;
+                    additional.value = parseFloat(val3.value) + parseFloat(val6.value);
+                    val7.value = parseFloat(val4.value) + parseFloat(val6.value);
+                    productId.value = data.id;
+
+                    let sum1 = 0 , sum2 = 0, sum3 = 0;
+                    let len = document.querySelectorAll('.val7').length;
+                    for(let i=0;i<len;i++)
+                    {
+                        sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                        sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                        sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+                    }
+                    document.getElementById('without_tax').value = sum1;
+                    document.getElementById('tax_prize').value = sum2;
+                    document.getElementById('total_bill').value = Math.floor(sum3);
+                }
+            });
+        });
+
+        val2.addEventListener('input',function(){
+            $.ajax({
+                url:  "/billings/"+val1.value+"/product_details",
+                dataType: "json",
+                success: function(data) {
+                    val4.value = data.unit_price * val2.value;
+                    val6.value = (val4.value/100)*val5.value;
+                    // additional.value = parseFloat(val3.value) + parseFloat(val6.value);
+                    val7.value = parseFloat(val4.value) + parseFloat(val6.value);
+
+                    var sum1 = 0 , sum2 = 0, sum3 = 0;
+                    var len = document.querySelectorAll('.val7').length;
+                    for(var i=0;i<len;i++)
+                    {
+                        sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                        sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                        sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+                    }
+                    document.getElementById('without_tax').value = sum1;
+                    document.getElementById('tax_prize').value = sum2;
+                    document.getElementById('total_bill').value = Math.floor(sum3);
+                }
+            });
+        });
+
+
+
+        $('#call').click(function () {
+
+            $('#inputs').append('<div class="form-inline">\n' +
+                '          <select class="val1 form-control col-md-3">\n' +
+                '            <% @products.each do |product| %>\n' +
+                '              <option value=<%= product.id %>><%= product.name %></option>\n' +
+                '            <% end %>\n' +
+                '          </select>&emsp;\n' +
+                '\n' +
+                '          <input name=billing[product_details_attributes][][quantity] class="val2 form-control col-md-3" min="1" type="number" value="1">&emsp;\n' +
+                '\n' +
+                '          <input placeholder="unit prize" class="val3" value="<%= @product.unit_price %>" type="hidden" >\n' +
+                '          <input name=billing[product_details_attributes][][purchased_price] placeholder="purchased prize" class="val4" value="<%= @product.unit_price %>" type="hidden">\n' +
+                '          <input placeholder="tax%" class="val5" value="<%= @product.tax_percentage %>" type="hidden">\n' +
+                '          <input name=billing[product_details_attributes][][tax_payable_for_item] placeholder="total tax" class="val6" type="hidden">\n' +
+                '\n' +
+                '          <input class="additional form-control col-md-2" readonly>&emsp;\n' +
+                '          <input name=billing[product_details_attributes][][total_price_of_item] placeholder="total price" class="val7 form-control col-md-2" readonly>&emsp;\n' +
+                '\n' +
+                '          <input class="product_id" name=billing[product_details_attributes][][product_id] value="<%= @product.id %>" type="hidden">\n' +
+                '          <button id="delete" class="btn btn-danger">Delete</button>\n' +
+                '\n' +
+                '          <p><br/><br/></p>\n' +
+                '\n' +
+                '        </div>');
+
+            var len = document.querySelectorAll('.val3').length;
+
+
+            document.getElementsByClassName('val6')[len-1].value = (document.getElementsByClassName('val3')[len-1].value/100) * document.getElementsByClassName('val5')[len-1].value;
+            document.getElementsByClassName('val7')[len-1].value = parseFloat(document.getElementsByClassName('val4')[len-1].value) + parseFloat(document.getElementsByClassName('val6')[len-1].value);
+            document.getElementsByClassName('additional')[len-1].value = parseFloat(document.getElementsByClassName('val3')[len-1].value) + parseFloat(document.getElementsByClassName('val6')[len-1].value);
+
+            var val1 = document.getElementsByClassName('val1')[len-1];
+            var val2 = document.getElementsByClassName('val2')[len-1];
+            var val3 = document.getElementsByClassName('val3')[len-1];
+            var val4 = document.getElementsByClassName('val4')[len-1];
+            var val5 = document.getElementsByClassName('val5')[len-1];
+            var val6 = document.getElementsByClassName('val6')[len-1];
+            var val7 = document.getElementsByClassName('val7')[len-1];
+            var additional = document.getElementsByClassName('additional')[len-1];
+            var productId = document.getElementsByClassName('product_id')[len-1];
+
+            val1.addEventListener('input',function(){
+                $.ajax({
+                    url:  "/billings/"+val1.value+"/product_details",
+                    dataType: "json",
+                    success: function(data) {
+                        val3.value = data.unit_price;
+                        val4.value = data.unit_price * val2.value;
+                        val5.value = data.tax;
+                        val6.value = (val4.value/100)*val5.value;
+                        additional.value = parseFloat(val3.value) + parseFloat(val6.value);
+                        val7.value = parseFloat(val4.value) + parseFloat(val6.value);
+                        productId.value = data.id;
+
+                        var sum1 = 0 , sum2 = 0, sum3 = 0;
+                        var len = document.querySelectorAll('.val7').length;
+                        for(var i=0;i<len;i++)
+                        {
+                            sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                            sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                            sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+                        }
+                        document.getElementById('without_tax').value = sum1;
+                        document.getElementById('tax_prize').value = sum2;
+                        document.getElementById('total_bill').value = Math.floor(sum3);
+                    }
+                });
+            });
+
+            val2.addEventListener('input',function(){
+                $.ajax({
+                    url:  "/billings/"+val1.value+"/product_details",
+                    dataType: "json",
+                    success: function(data) {
+                        val4.value = data.unit_price * val2.value;
+                        val6.value = (val4.value/100)*val5.value;
+                        // additional.value = parseFloat(val3.value) + parseFloat(val6.value);
+                        val7.value = parseFloat(val4.value) + parseFloat(val6.value);
+
+                        var sum1 = 0 , sum2 = 0, sum3 = 0;
+                        var len = document.querySelectorAll('.val7').length;
+                        for(var i=0;i<len;i++)
+                        {
+                            sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                            sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                            sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+                        }
+                        document.getElementById('without_tax').value = sum1;
+                        document.getElementById('tax_prize').value = sum2;
+                        document.getElementById('total_bill').value = Math.floor(sum3);
+                    }
+                });
+            });
+
+            var sum1 = 0 , sum2 = 0, sum3 = 0;
+            var length = document.querySelectorAll('.val7').length;
+            for(var i=0;i<length;i++)
+            {
+                sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+            }
+            document.getElementById('without_tax').value = sum1;
+            document.getElementById('tax_prize').value = sum2;
+            document.getElementById('total_bill').value = Math.floor(sum3);
+        });
+
+        $('body').on('click','#delete',function(){
+            $(this).parent('div').remove();
+
+            var sum1 = 0 , sum2 = 0, sum3 = 0;
+            var length = document.querySelectorAll('.val7').length;
+            for(var i=0;i<length;i++)
+            {
+                sum1 = sum1 + parseFloat(document.getElementsByClassName('val4')[i].value);
+                sum2 = sum2 + parseFloat(document.getElementsByClassName('val6')[i].value);
+                sum3 = sum3 + parseFloat(document.getElementsByClassName('val7')[i].value);
+            }
+            document.getElementById('without_tax').value = sum1;
+            document.getElementById('tax_prize').value = sum2;
+            document.getElementById('total_bill').value = Math.floor(sum3);
+        });
+
+
+    });
+</script>
+

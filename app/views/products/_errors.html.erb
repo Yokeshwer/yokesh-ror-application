@@ -1,0 +1,10 @@
+<div id="errors">
+  <h1><%= products.errors.count %> errors occured</h1>
+  <ul>
+    <% products.errors.full_messages.each do |message| %>
+      <li>
+        <%= message %><br/>
+      </li>
+    <% end %>
+  </ul>
+</div>

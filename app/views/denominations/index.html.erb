@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
+
+
+  <a class="navbar-brand" href="/customers">Bill List</a>
+  <a class="navbar-brand" href="/billings">New Bill</a>
+  <a class="navbar-brand" href="/products">Products</a>
+
+</nav>
+<div id="flash_message"></div>
+
+<h1>In denominations</h1>
+<table class="table table-striped">
+  <thead>
+    <tr>
+      <th>Rupees</th>
+      <th>Count</th>
+      <th>Edit</th>
+      <th>Delete</th>
+    </tr>
+  </thead>
+  <tbody id="denomination_table">
+    <% @denominations.each do |denomination| %>
+      <tr id="denomination_<%= denomination.id %>">
+        <%= render 'denominations/denomination_row', denomination: denomination %>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+<%= link_to 'New Denomination', new_denomination_path, class: 'btn btn-success', remote: true %>
+<div class="modal fade" id="denominations" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title" id="title"></h1>
+      </div>
+      <div class="modal-body">
+        <div id="form"></div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>

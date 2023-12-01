@@ -1,0 +1,8 @@
+<div id="for_errors">
+  <h1>Please provide valid informations</h1>
+  <ul>
+    <% new_one.errors.full_messages.each do |message| %>
+      <li><%= message %><br/></li>
+    <% end %>
+  </ul>
+</div>

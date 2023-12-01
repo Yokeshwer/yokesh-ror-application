@@ -1,0 +1,12 @@
+<% if @product.errors.any? %>
+  $('#error_division').html('<%= j render 'errors',products: @product %>');
+<% else %>
+  $('#products').modal('hide');
+  $('#product_table').append('<tr id="product_<%= @product.id %>">\n'+'<%= j render 'products/product_row', product: @product %>\n'+'</tr>');
+  $('#flash_message').html('<div class="alert alert-success" id="message_shower"><%= flash[:notice] %></div>');
+  setTimeout(remove_flash_message,3000);
+
+  function remove_flash_message(){
+      $('#message_shower').remove();
+  }
+<% end %>

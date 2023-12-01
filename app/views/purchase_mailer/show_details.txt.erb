@@ -1,0 +1,4 @@
+<p>Thank you <%= @details.email %>, for your purchase</p>
+<p>Paid amount: <%= @details.amount %></p>
+<p>Bill amount: <%= @details.total_bill %></p>
+<p>Balance: <%= @details.amount - @details.total_bill.to_i %></p>

@@ -1,0 +1,4 @@
+<td><%= denomination.rupees %></td>
+<td><%= denomination.count %></td>
+<td><%= link_to 'Update', edit_denomination_path(denomination), class: 'btn btn-primary', remote: true %></td>
+<td><%= link_to 'Delete', denomination_path(denomination), method: :delete, data: { confirm: 'Are you sure?' }, class: 'btn btn-danger', id: denomination.id, remote: true %></td>

@@ -1,0 +1,31 @@
+<%= form_for products, remote: true do |product| %>
+
+
+    <div id="error_division">
+    </div>
+
+
+    <div class="form-group row">
+      <label for="name" class="col-md-4">Product Name</label>
+      <div class="col-md-8">
+        <%= product.text_field :name, class: 'form-control col-md-8', placeholder: 'Enter unique name', autocomplete: 'off' %>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="unit_price" class="col-md-4">Unit Price</label>
+      <div class="col-md-8">
+        <%= product.text_field :unit_price, class: 'form-control col-md-8', placeholder: 'Enter Unit price', autocomplete: 'off' %>
+      </div>
+    </div>
+
+    <div class="form-group row">
+      <label for="tax_percentage" class="col-md-4">Tax percentage</label>
+      <div class="col-md-8">
+        <%= product.text_field :tax_percentage, class: 'form-control col-md-8', placeholder: 'Enter tax% for product', autocomplete: 'off' %>
+      </div>
+    </div>
+
+  <br/>
+  <%= product.submit 'Submit', class: 'btn btn-success' %>
+<% end %>
