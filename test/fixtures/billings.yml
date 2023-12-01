@@ -1,0 +1,23 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  email: MyText
+  amount: 1
+  five_hundred_rs: 1
+  fifty_rs: 1
+  twenty_rs: 1
+  ten_rs: 1
+  five_rs: 1
+  two_rs: 1
+  one_rs: 1
+
+two:
+  email: MyText
+  amount: 1
+  five_hundred_rs: 1
+  fifty_rs: 1
+  twenty_rs: 1
+  ten_rs: 1
+  five_rs: 1
+  two_rs: 1
+  one_rs: 1
