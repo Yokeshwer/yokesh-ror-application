@@ -12,8 +12,8 @@ RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources
 RUN apt-get update && apt-get install -y yarn
 RUN gem update bundler
 RUN apt install git -y
-RUN mkdir -p /var/www/demo
-#WORKDIR /var/www/demo
+# RUN mkdir -p /var/www/demo
+WORKDIR /var/www
 RUN git clone https://github.com/Yokeshwer/yokesh-ror-application.git
 WORKDIR /var/www/yokesh-ror-application
 RUN bundle install
