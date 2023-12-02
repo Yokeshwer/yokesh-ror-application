@@ -1,0 +1,19 @@
+version: "3.8"
+services:
+  ror:
+    build: .
+    ports:
+      - 3000:3000
+    environment:
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=sample
+      - DATABASE_USER=postgres
+      - DATABASE_PASSWORD=yokeshwerp
+      - DATABASE_HOST=env-database.c5aciluajqvk.us-east-1.rds.amazonaws.com
+      - RAILS_ENV=production
+  nginx:
+    build: ./nginx
+    ports:
+      - 80:80
+    depends_on:
+      - ror
