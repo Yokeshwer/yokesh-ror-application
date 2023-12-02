@@ -11,10 +11,11 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
 RUN apt-get update && apt-get install -y yarn
 RUN gem update bundler
-
+RUN apt install git -y
 RUN mkdir -p /var/www/demo
-WORKDIR /var/www/demo
-COPY . .
+#WORKDIR /var/www/demo
+RUN git clone https://github.com/Yokeshwer/yokesh-ror-application.git
+WORKDIR /var/www/yokesh-ror-application
 RUN bundle install
 RUN chmod +x ./entrypoint.sh
 ENTRYPOINT [ "./entrypoint.sh" ]
