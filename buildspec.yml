@@ -4,9 +4,10 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to ECR"
-      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
-      - NGINX_URI=public.ecr.aws/x6c4r7e7/code_build_nginx
-      - ROR_URI=public.ecr.aws/x6c4r7e7/code_build_ror
+#      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+      - NGINX_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_nginx
+      - ROR_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_ror
   
   build:
     commands:    
