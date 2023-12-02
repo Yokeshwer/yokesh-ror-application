@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - echo "Logging in to ECR"
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
+      - NGINX_URI=public.ecr.aws/x6c4r7e7/code_build_nginx
+      - ROR_URI=public.ecr.aws/x6c4r7e7/code_build_ror
+  
+  build:
+    commands:    
+      - echo "Build started on $(date)"
+      - docker build -t $ROR_URI:latest .
+      - docker tag $ROR_URI:latest $ROR_URI:latest
+      - cd ./nginx
+      - docker build -t $NGINX_URI:latest .
+      - docker tag $NGINX_URI:latest $NGINX_URI:latest
+
+  post_build:
+    commands:     
+      - echo "Build completed on $(date)"
+      - docker push $ROR_URI:latest
+      - docker push $NGINX_URI:latest
+      - echo "Pushed two images"
