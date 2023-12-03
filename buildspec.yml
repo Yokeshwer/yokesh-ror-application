@@ -4,15 +4,13 @@ phases:
   pre_build:
     commands:
       - echo "Logging in to Docker Hub..."
-      - docker login -u yokeshwer -p $PASSWORD
+      - docker login -u yokeshwer -p yokesh@docker
       - echo "Logging in to Amazon ECR..."
       - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
       - ROR_URI=public.ecr.aws/x6c4r7e7/code_build_ror
       - NGINX_URI=public.ecr.aws/x6c4r7e7/code_build_nginx
       - echo "Docker Hub login successful."
       - echo "Amazon ECR login successful."
-     
-
   build:
     commands:
       - echo "Build started on $(date)"
@@ -26,7 +24,6 @@ phases:
       - docker build -t $NGINX_URI:latest .
       - echo "Tagging Docker image for NGINX..."
       - docker tag $NGINX_URI:latest $NGINX_URI:latest
-
   post_build:
     commands:
       - echo "Build completed on $(date)"
