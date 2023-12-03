@@ -3,24 +3,65 @@ version: 0.2
 phases:
   pre_build:
     commands:
-      - echo "Logging in to ECR"
-#      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
-      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
-      - NGINX_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_nginx
+      - echo login in to docker hub
+      - docker login -u yokeshwer -p $PASSWORD
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
       - ROR_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_ror
-  
+      - NGINX_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_nginx
+
+
   build:
-    commands:    
-      - echo "Build started on $(date)"
+    commands:
+      - echo Build started on `date`
+      - echo docker image is building
       - docker build -t $ROR_URI:latest .
       - docker tag $ROR_URI:latest $ROR_URI:latest
       - cd ./nginx
       - docker build -t $NGINX_URI:latest .
       - docker tag $NGINX_URI:latest $NGINX_URI:latest
-
-  post_build:
-    commands:     
-      - echo "Build completed on $(date)"
+      
+post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Pushing the Docker ror image...
       - docker push $ROR_URI:latest
+      - echo push nginx image...
       - docker push $NGINX_URI:latest
-      - echo "Pushed two images"
+
+      
+
+
+
+
+
+
+
+
+
+# version: 0.2
+
+# phases:
+#   pre_build:
+#     commands:
+#       - echo "Logging in to ECR"
+# #      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
+#       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com
+#       - NGINX_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_nginx
+#       - ROR_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_ror
+  
+#   build:
+#     commands:    
+#       - echo "Build started on $(date)"
+#       - docker build -t $ROR_URI:latest .
+#       - docker tag $ROR_URI:latest $ROR_URI:latest
+#       - cd ./nginx
+#       - docker build -t $NGINX_URI:latest .
+#       - docker tag $NGINX_URI:latest $NGINX_URI:latest
+
+#   post_build:
+#     commands:     
+#       - echo "Build completed on $(date)"
+#       - docker push $ROR_URI:latest
+#       - docker push $NGINX_URI:latest
+#       - echo "Pushed two images"
