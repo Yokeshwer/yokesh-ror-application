@@ -6,13 +6,12 @@ phases:
       - echo "Logging in to Docker Hub..."
       - docker login -u yokeshwer -p $PASSWORD
       - echo "Logging in to Amazon ECR..."
-      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
-      - ROR_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_ror
-      - NGINX_URI=$AWS_ACCOUNT_ID.dkr.ecr.us-east-1.amazonaws.com/code_build_nginx
+      - aws ecr-public get-login-password --region us-east-1 | docker login --username AWS --password-stdin public.ecr.aws/x6c4r7e7
+      - ROR_URI=public.ecr.aws/x6c4r7e7/code_build_ror
+      - NGINX_URI=public.ecr.aws/x6c4r7e7/code_build_nginx
       - echo "Docker Hub login successful."
       - echo "Amazon ECR login successful."
-      - echo "ROR_URI: $ROR_URI"
-      - echo "NGINX_URI: $NGINX_URI"
+     
 
   build:
     commands:
