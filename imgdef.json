@@ -1,0 +1,11 @@
+[
+    {
+      "name": "ror",
+      "imageUri": "536419908864.dkr.ecr.us-east-1.amazonaws.com/root_ror_terraform:latest"
+    },
+    {
+        "name": "nginx",
+        "imageUri": "536419908864.dkr.ecr.us-east-1.amazonaws.com/root_nginx_terraform:latest"
+      }
+
+  ]
