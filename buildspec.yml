@@ -7,7 +7,7 @@ phases:
       - docker login -u yokeshwer -p yokesh@docker
       - echo "Logging in to Amazon ECR..."
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin $ACCOUNT.dkr.ecr.us-east-1.amazonaws.com
-      - ROR_URI=$ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/root_ror_terreform
+      - ROR_URI=$ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/root_ror_terraform
       - NGINX_URI=$ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/root_nginx_terraform
       - echo "Docker Hub login successful."
       - echo "Amazon ECR login successful."
